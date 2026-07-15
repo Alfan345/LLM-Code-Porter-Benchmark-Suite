@@ -1,0 +1,6 @@
+openai
+gradio
+pandas
+plotly
+python-dotenv
+pytest

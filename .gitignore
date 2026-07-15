@@ -1,0 +1,14 @@
+# File biner dan source code temporary hasil transpilasi
+main.cpp
+main.rs
+main
+main.exe
+
+# Cache Python
+__pycache__/
+*.pyc
+
+# Virtual Environment & Environment Variables
+.venv/
+venv/
+.env
