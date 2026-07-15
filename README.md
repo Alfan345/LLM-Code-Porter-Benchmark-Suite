@@ -1,13 +1,13 @@
 ---
-title: AI Transpiler Performance Benchmark Dashboard
-emoji: ⚡
-colorFrom: gray
-colorTo: purple
+title: AI Transpiler Benchmark
+emoji: 🚀
+colorFrom: blue
+colorTo: indigo
 sdk: gradio
 sdk_version: 5.16.0
-python_version: '3.12'
 app_file: app.py
 pinned: false
+hf_oauth: false
+# PAKSA MENGGUNAKAN CPU BASIC GRATIS
+hardware: cpu-basic
 ---
-
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
