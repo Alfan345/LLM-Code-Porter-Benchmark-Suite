@@ -146,21 +146,13 @@ The project has three layers of automated tests:
 - **Integration tests** (`test_verifier_integration.py`) — real end-to-end compilation with `g++`, covering success, compile-failure, and output-mismatch paths
 - **Mocked agent tests** (`test_porter.py`) — the self-correction loop tested against a fake LLM client (`unittest.mock`) that deliberately returns broken code on the first call and correct code on the second, proving the retry mechanism actually works — while still compiling the generated code for real
 
-<!-- TODO: run `pytest -v` and paste the final summary line here, e.g.:
-     20 passed in 4.32s -->
+     18 passed in 7.83s -->
 
 ---
 
 ## Sample Results
 
-<!-- TODO: paste a real results table here once you've run a benchmark with your final model line-up, e.g.:
-
-| Model | Language | Passed | Attempts | Compile (s) | Execution (s) | Speedup | Cost ($) |
-|---|---|---|---|---|---|---|---|
-| deepseek-chat | cpp | ✅ | 1 | 0.88 | 0.016 | 610x | 0.000004 |
-| gemini-2.5-flash | cpp | ✅ | 1 | 0.91 | 0.017 | 570x | 0.000000 |
-| nvidia/nemotron-3-ultra:free | cpp | ✅ | 1 | 0.88 | 0.018 | 540x | 0.000000 |
--->
+<img width="2324" height="956" alt="4b530d4f-ba25-45fb-a83b-19f3587b7d82" src="https://github.com/user-attachments/assets/77a8fce8-6b04-4f49-abed-c1b64d2084ce" />
 
 ---
 
