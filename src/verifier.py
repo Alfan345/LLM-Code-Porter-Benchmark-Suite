@@ -1,12 +1,3 @@
-"""
-verifier.py
-
-Responsibility: answer ONE question only — "is the generated code's output correct?"
-This module should NOT know anything about timing, cost, or which model produced the code.
-Keep it reusable so both benchmark.py and the self-correction loop in porter.py can call it.
-"""
-
-
 import io
 import re
 import subprocess
@@ -15,13 +6,6 @@ import traceback
 
 
 def run_python(code: str, ) -> dict:
-    """
-    Execute a Python code string and capture its stdout as a string.
-
-    Hint: you already wrote something very close to this in day4.ipynb (run_python()).
-    Reuse that logic here. Think about what should happen if the code raises an exception —
-    should this function crash, or return an error string?
-    """
     globals_dict = {"__builtins__": __builtins__}
 
     buffer = io.StringIO()
@@ -42,19 +26,8 @@ def write_output(code: str, language_profile: dict) -> None:
         f.write(code)
 
 def compile_and_run(generated_code: str, language_profile: dict) -> dict:
-    """
-    Compile and execute a non-Python source file using a given language profile
-    (compile_command, run_command — see languages/ module).
-
-    Hint: reuse the subprocess pattern from day4.ipynb's compile_and_run().
-    Question to think about: what should this function return if COMPILATION fails
-    (before it even runs)? That's a different failure mode from "ran but wrong output" —
-    does your return value need to distinguish between them?
-    """
-
     write_output(code=generated_code, language_profile=language_profile)
     try:
-        # Compile the code
         compile_command = language_profile["compile_command"]
         compile_process = subprocess.run(compile_command, capture_output=True, text=True)
 
@@ -66,7 +39,7 @@ def compile_and_run(generated_code: str, language_profile: dict) -> dict:
                 "error": f"Compilation failed:\n{compile_process.stderr.strip()}"
             }
 
-        # Run the compiled code
+        # Run the compiled program and capture its output.
         run_command = language_profile["run_command"]
         run_process = subprocess.run(run_command, capture_output=True, text=True)
 
@@ -100,20 +73,6 @@ def extract_numbers(text: str) -> list[float]:
     return [float(match) for match in matches]
 
 def compare_outputs(expected_output: str, actual_output: str, tolerance: float = None) -> dict:
-    """
-    Compare two outputs and decide whether they "match enough" to count as correct.
-
-    Must return something like:
-        {"passed": bool, "reason": str}
-    ("reason" can be empty string when passed=True, but should be a helpful message when False —
-    this message is exactly what you'll feed back to the model in the self-correction loop.)
-
-    Hint: for numeric output (like the `pi` example), exact string match will almost always fail
-    due to floating point precision. Think back to your own idea about tolerance-based comparison —
-    how would you extract a float from a string like "Result: 3.141592653590" to compare it
-    with a tolerance (e.g. abs(a - b) < 1e-6)? What if the output has MULTIPLE lines/numbers?
-    """
-
     expected = expected_output.strip()
     actual = actual_output.strip()
 
@@ -166,16 +125,6 @@ def compare_outputs(expected_output: str, actual_output: str, tolerance: float =
 
 
 def verify(python_code: str, generated_code: str, language_profile: dict, tolerance: float = 1e-6) -> dict:
-    """
-    High-level orchestrator for this module: runs the Python code, compiles+runs the generated
-    code, compares them, and returns a single verification result.
-
-    Hint: this is the ONE function porter.py and benchmark.py should actually call —
-    they shouldn't need to know about run_python/compile_and_run/compare_outputs individually.
-    Think about what a good return shape looks like, e.g.:
-        {"passed": bool, "reason": str, "python_output": str, "generated_output": str}
-    """
-
     python_result = run_python(python_code)
     if not python_result["success"]:
         return {
@@ -188,10 +137,9 @@ def verify(python_code: str, generated_code: str, language_profile: dict, tolera
         
     python_output = python_result["stdout"].strip()
     
-    # 2. Panggil compile_and_run dengan parameter terpisah (generated_code dipasing ke sini)
+    # Compile and run the generated code with the selected language profile.
     compile_run_result = compile_and_run(generated_code=generated_code, language_profile=language_profile)
     
-    # 3. Cek kegagalan compile/run
     if not compile_run_result["success"]:
         return {
             "passed": False,
@@ -202,7 +150,7 @@ def verify(python_code: str, generated_code: str, language_profile: dict, tolera
         }
     generated_output = compile_run_result["output"]
 
-    # 4. Bandingkan output
+    # Compare the captured outputs.
     comparison = compare_outputs(python_output, generated_output, tolerance)
 
     if not comparison["passed"]:

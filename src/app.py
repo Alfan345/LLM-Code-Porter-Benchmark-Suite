@@ -14,7 +14,6 @@ from benchmark import (
     results_to_dataframe
 )
 
-# Load environment variables from .env file
 load_dotenv(override=True)
 
 def run_full_benchmark(python_code: str, selected_models: list, target_language: str):
@@ -34,15 +33,14 @@ def run_full_benchmark(python_code: str, selected_models: list, target_language:
     rows = []
     last_successful_code = "// No successful code generated from selected models."
     
-    # 1. Measure baseline execution time for the original Python code
+    # Measure the baseline execution time for the Python source.
     python_execution_time = measure_python_execution_time(python_code, runs=3)
     
-    # 2. Execute benchmark pipeline for each selected LLM model
+    # Run the benchmark pipeline for each selected model.
     for model in selected_models:
         client_obj = available_clients.get(model)
         
         if not client_obj:
-            # Defensive handling if API Key is missing: build an empty/failed row via benchmark.py
             failed_verification = {"passed": False}
             row = build_benchmark_row(
                 model=model,
@@ -57,7 +55,6 @@ def run_full_benchmark(python_code: str, selected_models: list, target_language:
             rows.append(row)
             continue
             
-        # A. Run Translation Agent with Self-Correction Loop
         port_result = port_with_self_correction(
             client=client_obj,
             model=model,
@@ -70,10 +67,10 @@ def run_full_benchmark(python_code: str, selected_models: list, target_language:
         attempts_needed = port_result["attempts_needed"]
         total_usage = port_result["total_usage"]
         
-        # B. Calculate token cost estimation ($ USD)
+        # Estimate token cost in USD.
         cost = estimate_cost(model, total_usage, pricing_table)
         
-        # C. Measure compile and execution times based on agent success status
+        # Measure runtime metrics only for successful translations.
         if port_result["success"] is True:
             compile_time = measure_compile_time(language_profile)
             execution_time = measure_execution_time(language_profile, runs=3)
@@ -83,7 +80,6 @@ def run_full_benchmark(python_code: str, selected_models: list, target_language:
             compile_time = -1.0
             execution_time = -1.0
             
-        # D. Correct Architecture: Delegate row assembly to benchmark.py
         row = build_benchmark_row(
             model=model,
             language=target_language,
@@ -96,7 +92,6 @@ def run_full_benchmark(python_code: str, selected_models: list, target_language:
         )
         rows.append(row)
         
-    # 3. Correct Architecture: Delegate DataFrame generation and sorting to benchmark.py
     df = results_to_dataframe(rows)
         
     return df, last_successful_code
@@ -127,7 +122,6 @@ def build_ui():
         )
         
         with gr.Row():
-            # Left Column: Configuration
             with gr.Column(scale=1):
                 gr.Markdown("### Experiment Configuration")
                 
@@ -152,7 +146,6 @@ def build_ui():
                 
                 btn_run = gr.Button("Run Full Benchmark", variant="primary")
             
-            # Right Column: Results and Generated Code Output
             with gr.Column(scale=2):
                 gr.Markdown("### Metrics and Performance Analysis")
                 
@@ -168,7 +161,6 @@ def build_ui():
                     interactive=False
                 )
                 
-        # Wiring Button Click Action
         btn_run.click(
             fn=run_full_benchmark,
             inputs=[python_code_input, models_input, target_lang_input],

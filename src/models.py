@@ -17,7 +17,6 @@ def load_clients() -> dict:
     """
     model_clients = {}
 
-    # 1. Inisialisasi Klien Per-Provider secara internal
     openrouter_key = os.getenv("OPENROUTER_API_KEY")
     openrouter_client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
@@ -35,17 +34,12 @@ def load_clients() -> dict:
         base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
         api_key=gemini_key,
     ) if gemini_key else None
-
-
-    # 2. Pemetaan Berbasis Model (Model-based Mapping)
     
     # Model via OpenRouter
     if openrouter_client:
         model_clients["nvidia/nemotron-3-ultra-550b-a55b:free"] = openrouter_client
-        # Jika nanti kamu mau tambah model OpenRouter lain, tinggal daftarkan di bawah ini:
-        # model_clients["meta-llama/llama-3.3-70b-instruct:free"] = openrouter_client
-
-    # Model via DeepSeek Resmi
+       
+    # Model via DeepSeek 
     if deepseek_client:
         model_clients["deepseek-chat"] = deepseek_client
 
@@ -62,12 +56,9 @@ def get_pricing_table() -> dict:
     Key di sini wajib SAMA PERSIS dengan key yang ada di load_clients().
     """
     return {
-        # NVIDIA Nemotron-3-Ultra (OpenRouter Free)
         "nvidia/nemotron-3-ultra-550b-a55b:free": {"input_per_1m": 0.0, "output_per_1m": 0.0},
         
-        # DeepSeek V4 Flash (Nama API komersial resminya: deepseek-chat)
         "deepseek-chat": {"input_per_1m": 0.14, "output_per_1m": 0.28},
-        
-        # Gemini Models (AI Studio Free Tier)
+     
         "gemini-2.5-flash": {"input_per_1m": 0.0, "output_per_1m": 0.0},
     }

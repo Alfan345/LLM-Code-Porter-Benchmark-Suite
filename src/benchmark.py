@@ -1,21 +1,9 @@
-"""
-benchmark.py
-
-Responsibility: answer "how fast / how much / how reliable" for a given model+language run,
-and assemble results into a structured table for the dashboard.
-Correctness itself is verifier.py's job — this module just RECORDS the passed/failed status
-alongside timing and cost, it doesn't decide correctness.
-"""
-
 import sys
 import time
 import subprocess
 import pandas as pd
 
 def measure_python_execution_time(python_code: str, runs: int = 3) -> float:
-    """
-    Mengukur waktu eksekusi tercepat (Baseline) dari kode Python asli.
-    """
     recorded_times = []
     
     for attempt in range(runs):
@@ -28,7 +16,7 @@ def measure_python_execution_time(python_code: str, runs: int = 3) -> float:
                 check=True,
                 timeout=30
             )
-        except Exception:  # Disederhanakan: Menangkap semua error eksekusi
+        except Exception:  
             continue
             
         end_time = time.perf_counter()
@@ -38,9 +26,6 @@ def measure_python_execution_time(python_code: str, runs: int = 3) -> float:
 
 
 def measure_compile_time(language_profile: dict) -> float:
-    """
-    Mengukur waktu kompilasi. Mengembalikan 0.0 jika bahasa interpreted (tanpa kompilasi).
-    """
     compile_command = language_profile.get("compile_command")
     if not compile_command:
         return 0.0
@@ -48,7 +33,7 @@ def measure_compile_time(language_profile: dict) -> float:
     start_time = time.perf_counter()
     try:
         subprocess.run(compile_command, capture_output=True, text=True, check=True)
-    except Exception:  # Disederhanakan: Menangkap semua error kompilasi
+    except Exception: 
         return -1.0
         
     end_time = time.perf_counter()
@@ -56,9 +41,6 @@ def measure_compile_time(language_profile: dict) -> float:
 
 
 def measure_execution_time(language_profile: dict, runs: int = 3) -> float:
-    """
-    Mengukur waktu eksekusi tercepat (Minimum) dari program hasil compile.
-    """
     run_command = language_profile["run_command"]
     recorded_times = []
     
@@ -72,7 +54,7 @@ def measure_execution_time(language_profile: dict, runs: int = 3) -> float:
                 check=True,
                 timeout=30
             )
-        except Exception:  # Disederhanakan: Menangkap semua error runtime/timeout
+        except Exception: 
             continue
             
         end_time = time.perf_counter()
@@ -82,9 +64,6 @@ def measure_execution_time(language_profile: dict, runs: int = 3) -> float:
 
 
 def estimate_cost(model: str, usage: dict, pricing_table: dict) -> float:
-    """
-    Menghitung estimasi biaya token berdasarkan pricing basis 1 Juta Token (1M).
-    """
     model_pricing = pricing_table.get(model)
     if not model_pricing:
         return 0.0

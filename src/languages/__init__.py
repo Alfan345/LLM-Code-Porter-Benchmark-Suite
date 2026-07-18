@@ -20,9 +20,9 @@ and have the calling code skip the compile step when that's the case?
 LANGUAGE_REGISTRY = {
     "cpp": {
         "name": "C++",
-        "file_extension": "cpp",  # write_output menggunakan format tanpa titik
-        "compile_command": ["g++", "-std=c++17", "main.cpp", "-o", "main"], # Sesuaikan g++/clang++ dari hasil cek laptopmu
-        "run_command": ["./main"],  # Di Windows, subprocess Python otomatis mengenali executable ini
+        "file_extension": "cpp",  
+        "compile_command": ["g++", "-std=c++17", "main.cpp", "-o", "main"], 
+        "run_command": ["./main"],  
         "system_prompt": (
             "You are an expert C++ developer. Convert the given Python code into highly optimized C++ code.\n"
             "CRITICAL RULES:\n"
