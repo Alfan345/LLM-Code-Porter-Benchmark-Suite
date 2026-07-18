@@ -1,3 +1,4 @@
+
 # LLM Code Porter & Benchmark Suite
 
 > An evaluation harness that ports Python code to high-performance C++/Rust using LLMs, automatically verifies correctness against the original program, benchmarks the results, and self-corrects when a model gets it wrong.
@@ -32,7 +33,7 @@ The result is a small but real answer to "which LLM should I trust for this kind
      Suggested: record a ~15-20s screen capture of picking 2-3 models, clicking "Run Full Benchmark",
      and the results table + code view populating. A GIF reads far better on GitHub than a static image. -->
 
-![Demo screenshot placeholder](docs/demo-screenshot.png)
+<img width="1280" height="720" alt="661c267a-e966-4e51-8c0c-7e102baf66d5" src="https://github.com/user-attachments/assets/c5465a99-48d2-4693-989a-e079e99c2750" />
 
 *Benchmark dashboard comparing DeepSeek, Gemini, and an open-source model on the same Python→C++ porting task — all three passed verification on the first attempt.*
 
@@ -186,9 +187,7 @@ The project has three layers of automated tests:
 
 ## Why I Built This
 
-<!-- TODO: 2-4 sentences, your own words — e.g. what you were trying to learn, and what surprised you
-     while building it. This section is often what recruiters actually read closest, since it's
-     the part a generic AI-generated project can't fake. -->
+I built this to get hands-on experience working with frontier LLMs beyond simple prompt-and-response usage — actually wiring them into a real pipeline with retries, verification, and feedback loops. It was also a deliberate exercise in prompt engineering: learning how to structure system prompts and iterative feedback messages so a model reliably produces code that compiles and behaves correctly, rather than just "looks right" on the first try.
 
 ## License
 
